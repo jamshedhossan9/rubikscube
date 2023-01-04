@@ -19,8 +19,15 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  perspective: 960px;
   background-image: radial-gradient(circle, #4b667c, rgba(0, 22, 31, 0.86));
+}
+.cube-container .cube-box-wrapper {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  perspective: 960px;
 }
 .cube-container .cube-box {
   width: 240px;
@@ -228,7 +235,7 @@ body {
   transition: 0.2s linear;
 }
 .cube-container .command-btns {
-  padding-top: 150px;
+  padding: 40px 10px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
