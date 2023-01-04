@@ -30,7 +30,7 @@ body {
   perspective: 960px;
 }
 .cube-container .cube-box-wrapper.is-small-device {
-  transform: scale(0.7);
+  transform: scale(0.6);
 }
 .cube-container .cube-box {
   width: 240px;
@@ -244,7 +244,7 @@ body {
   transition: 0.2s linear;
 }
 .cube-container .command-btns {
-  padding: 40px 10px 100px 10px;
+  padding: 20px 10px 100px 10px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

@@ -117,6 +117,7 @@ ready(() => {
     cubeBox.style.transform = "rotateX( " + rotX + "deg) rotateY(" + rotY + "deg)";
 
     function documentMousedown(ev){
+        ev.preventDefault();
         if(!ev.target.closest(cubeClass)){
             if(ev.type == 'touchstart'){
                 lastMouseX = ev.touches[0].clientX;
@@ -135,6 +136,7 @@ ready(() => {
         document.removeEventListener("touchmove", documentMouseMoved);
     }
     function documentMouseMoved(ev) {
+        ev.preventDefault();
         if(ev.type == 'touchmove'){
             var deltaX = ev.touches[0].pageX - lastMouseX;
             var deltaY = ev.touches[0].pageY - lastMouseY;
@@ -641,6 +643,7 @@ ready(() => {
     }
 
     function cubeMouseMove(event){
+        event.preventDefault();
         if(currentMovingSlice && !holdUserAction){
             if(event.type == 'touchmove'){
                 var topElement = document.elementFromPoint(event.touches[0].pageX, event.touches[0].pageY);
@@ -720,6 +723,7 @@ ready(() => {
 
     function cubeMouseDown(event){
         // console.log(event.type, event.which)
+        event.preventDefault();
         if(event.type == 'mousedown' && event.which != 1){
             return;
         }
