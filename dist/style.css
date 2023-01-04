@@ -29,6 +29,9 @@ body {
   align-items: center;
   perspective: 960px;
 }
+.cube-container .cube-box-wrapper.is-small-device {
+  transform: scale(0.7);
+}
 .cube-container .cube-box {
   width: 240px;
   height: 240px;
@@ -228,6 +231,12 @@ body {
 .cube-container .cube-box.has-transition .slice-con .slice-single-pillar .slice-single {
   transition: 0.5s linear;
 }
+.cube-container .cube-box.has-transition.transition-small-device .slice-con .slice-single-pillar {
+  transition: 0.4s linear;
+}
+.cube-container .cube-box.has-transition.transition-small-device .slice-con .slice-single-pillar .slice-single {
+  transition: 0.4s linear;
+}
 .cube-container .cube-box.has-transition.transition-low .slice-con .slice-single-pillar {
   transition: 0.2s linear;
 }
@@ -235,7 +244,7 @@ body {
   transition: 0.2s linear;
 }
 .cube-container .command-btns {
-  padding: 40px 10px;
+  padding: 40px 10px 100px 10px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;

@@ -7,6 +7,8 @@ var ready = (callback) => {
 
   
 ready(() => { 
+    var windowWidth = window.innerWidth;
+    var windowHeight = window.innerHeight;
     var holdSliceRotation = false;
     var cubeWidth = 240;
     var transitionTime = 500;
@@ -157,6 +159,22 @@ ready(() => {
     document.addEventListener("mouseup", documentMouseUp);
     document.addEventListener("touchend", documentMouseUp);
 
+    function checkScreenSize(){
+        windowWidth = window.innerWidth;
+        windowHeight = window.innerHeight;
+        if(windowWidth < 600 || windowHeight < 600){
+            transitionTime = 400;
+            transitionTimeDelay = 40;
+            cubeBox.closest('.cube-box-wrapper').classList.add('is-small-device');
+            cubeBox.classList.add('transition-small-device');
+        }
+        else{
+            transitionTime = 500;
+            transitionTimeDelay = 50;
+            cubeBox.closest('.cube-box-wrapper').classList.remove('is-small-device');
+            cubeBox.classList.remove('transition-small-device');
+        }
+    }
     
     function transition(add){
         if(typeof add === "undefined") add = true;
@@ -174,6 +192,10 @@ ready(() => {
         else{
             transitionTime = 500;
             transitionTimeDelay = 50;
+            if(windowWidth < 600){
+                transitionTime = 400;
+                transitionTimeDelay = 40;
+            }
             cubeBox.classList.remove('transition-low');
         }
     }
@@ -583,6 +605,7 @@ ready(() => {
         processCommandQueue();
     }
 
+    checkScreenSize();
     initSides();
     transition();
     setTimeout(processCommandQueue, (transitionTime + (transitionTimeDelay * 4)));
@@ -720,5 +743,8 @@ ready(() => {
         el.addEventListener('touchstart', cubeMouseDown);
     });
 
+    window.addEventListener('resize', function(event) {
+        checkScreenSize();
+    }, true);
 });
 
