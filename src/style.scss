@@ -308,12 +308,18 @@ $colorDown: rgba(250, 2, 2, 0.3);
                 &:hover{
                     opacity: 1;
                 }
+                @media(max-width:600px){
+                    padding: 3px 7px;
+                    font-size: 12px;
+                }
             }
             .scrumble{
                 padding: 10px 20px;
                 background: rgb(16, 117, 232);
                 color: #fff;
+                font-size: 14px;
             }
+            
         }
     }
 }

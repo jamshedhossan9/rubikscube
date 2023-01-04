@@ -278,10 +278,17 @@ body {
 .cube-container .command-btns .command-btn-group .command-btn:hover, .cube-container .command-btns .command-btn-group .scrumble:hover {
   opacity: 1;
 }
+@media (max-width: 600px) {
+  .cube-container .command-btns .command-btn-group .command-btn, .cube-container .command-btns .command-btn-group .scrumble {
+    padding: 3px 7px;
+    font-size: 12px;
+  }
+}
 .cube-container .command-btns .command-btn-group .scrumble {
   padding: 10px 20px;
   background: rgb(16, 117, 232);
   color: #fff;
+  font-size: 14px;
 }
 
 .slice-move.ui-draggable-dragging {
