@@ -20,6 +20,7 @@ ready(() => {
         lastMouseY = 0;
     var rotX = -20,
         rotY = -20;
+    var cubeRotationSpeed = -0.1;
     var cubeClass = ".cube-box";
     var cubeContainer = document.querySelector('.cube-container');
     var cubeBox = cubeContainer.querySelector(cubeClass);
@@ -150,8 +151,8 @@ ready(() => {
             lastMouseY = ev.pageY;
         }
 
-        rotY -= deltaX * -0.1;
-        rotX += deltaY * -0.1;
+        rotY -= deltaX * cubeRotationSpeed;
+        rotX += deltaY * cubeRotationSpeed;
 
         cubeBox.style.transform = "rotateX( " + rotX + "deg) rotateY(" + rotY + "deg)";
     }
@@ -167,12 +168,14 @@ ready(() => {
         if(windowWidth < 600 || windowHeight < 600){
             transitionTime = 400;
             transitionTimeDelay = 40;
+            cubeRotationSpeed = -0.2;
             cubeBox.closest('.cube-box-wrapper').classList.add('is-small-device');
             cubeBox.classList.add('transition-small-device');
         }
         else{
             transitionTime = 500;
             transitionTimeDelay = 50;
+            cubeRotationSpeed = -0.1;
             cubeBox.closest('.cube-box-wrapper').classList.remove('is-small-device');
             cubeBox.classList.remove('transition-small-device');
         }
