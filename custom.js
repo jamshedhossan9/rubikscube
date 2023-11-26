@@ -11,8 +11,10 @@ ready(() => {
     var windowHeight = window.innerHeight;
     var holdSliceRotation = false;
     var cubeWidth = 240;
-    var transitionTime = 500;
-    var transitionTimeDelay = 50;
+    var transitionTimeRegular = 500, transitionTimeLow = 200, transitionTimeSmallScreen = 400;
+    var transitionTimeRegularDelay = 50, transitionTimeLowDelay = 20, transitionTimeSmallScreenDelay = 40;
+    var transitionTime = transitionTimeRegular;
+    var transitionTimeDelay = transitionTimeRegularDelay;
     var holdUserAction = false;
     var playing = false;
     
@@ -166,15 +168,15 @@ ready(() => {
         windowWidth = window.innerWidth;
         windowHeight = window.innerHeight;
         if(windowWidth < 600 || windowHeight < 600){
-            transitionTime = 400;
-            transitionTimeDelay = 40;
+            transitionTime = transitionTimeSmallScreen;
+            transitionTimeDelay = transitionTimeSmallScreenDelay;
             cubeRotationSpeed = -0.2;
             cubeBox.closest('.cube-box-wrapper').classList.add('is-small-device');
             cubeBox.classList.add('transition-small-device');
         }
         else{
-            transitionTime = 500;
-            transitionTimeDelay = 50;
+            transitionTime = transitionTimeRegular;
+            transitionTimeDelay = transitionTimeRegularDelay;
             cubeRotationSpeed = -0.1;
             cubeBox.closest('.cube-box-wrapper').classList.remove('is-small-device');
             cubeBox.classList.remove('transition-small-device');
@@ -190,16 +192,16 @@ ready(() => {
     function transitionLow(bool){
         if(typeof bool === "undefined") bool = true;
         if(bool){
-            transitionTime = 200;
-            transitionTimeDelay = 20;
+            transitionTime = transitionTimeLow;
+            transitionTimeDelay = transitionTimeLowDelay;
             cubeBox.classList.add('transition-low');
         }
         else{
-            transitionTime = 500;
-            transitionTimeDelay = 50;
+            transitionTime = transitionTimeRegular;
+            transitionTimeDelay = transitionTimeRegularDelay;
             if(windowWidth < 600){
-                transitionTime = 400;
-                transitionTimeDelay = 40;
+                transitionTime = transitionTimeSmallScreen;
+                transitionTimeDelay = transitionTimeSmallScreenDelay;
             }
             cubeBox.classList.remove('transition-low');
         }
@@ -278,12 +280,16 @@ ready(() => {
 
             var pillar = currentMatrix.pillar;
             var slice = currentMatrix.slice;
+            var oldPillar = JSON.parse(JSON.stringify(pillar));
+            var oldSlice = JSON.parse(JSON.stringify(slice));
             var surfaceCenter = null;
             var surfaceMatrix = null;
+            var oldSurfaceMatrix = null;
             if(i == 0 && j == 0){
                 if(dir == 'clock' || dir == 'counterClock'){
                     surfaceCenter = sliceCon.querySelector(`.slice-single-pillar[data-id="${side}-5"] .slice-single`);
                     surfaceMatrix = JSON.parse(JSON.stringify(sideAngles[`${side}-5`]));
+                    oldSurfaceMatrix = JSON.parse(JSON.stringify(sideAngles[`${side}-5`]));
                     if(dir == "clock"){
                         surfaceMatrix.slice[2] += 90;
                     }
@@ -323,18 +329,42 @@ ready(() => {
             }
 
             if(surfaceCenter){
+                // animateRotation(surfaceCenter, oldSurfaceMatrix.slice, surfaceMatrix.slice);
                 surfaceCenter.style.transform = `rotateX(${surfaceMatrix.slice[0]}deg) rotateY(${surfaceMatrix.slice[1]}deg) rotateZ(${surfaceMatrix.slice[2]}deg)`;
             }
             
             var pillarTransform = `rotateX(${pillar[0]}deg) rotateY(${pillar[1]}deg) rotateZ(${pillar[2]}deg)`;
             var sliceTransform = `rotateX(${slice[0]}deg) rotateY(${slice[1]}deg) rotateZ(${slice[2]}deg)`;
 
+            // animateRotation(pillarDom, oldPillar, pillar);
             pillarDom.style.transform = pillarTransform;
+            // animateRotation(pillarDom.querySelector('.slice-single'), oldSlice, slice);
             pillarDom.querySelector('.slice-single').style.transform = sliceTransform;
         }
     }
 
+    function animateRotation(el, old, _new){
+        var time = _parseInt(transitionTime/90);
+        var xInc = 0, yInc = 0, zInc =  0;
+        
+        if(_new[0] > old[0]) xInc = 1; else if(_new[0] < old[0]) xInc = -1;
+        if(_new[1] > old[1]) yInc = 1; else if(_new[1] < old[1]) yInc = -1;
+        if(_new[2] > old[2]) zInc = 1; else if(_new[2] < old[2]) zInc = -1;
+
+        function rotate(){
+            old[0] = old[0] + xInc;
+            old[1] = old[1] + yInc;
+            old[2] = old[2] + zInc;
+            el.style.transform = `rotateX(${old[0]}deg) rotateY(${old[1]}deg) rotateZ(${old[2]}deg)`;
+            if(_new[0] == old[0] && _new[1] == old[1] && _new[2] == old[2]){
+                clearInterval(rotating);
+            }
+        }
+        var rotating = setInterval(rotate, time);
+    }
+
     function initSides(){
+        console.log('initSides', Date.now());
         for(let x in sides){
             if(typeof sliceMoveTrack[x] === "undefined"){
                 sliceMoveTrack[x] = [];
@@ -427,6 +457,7 @@ ready(() => {
         });
         
         i++;
+        console.log('sliceMoveToExecute', Date.now());
         sliceMoveToExecute(nextStep, nextDir, initial, i);
     }
 
@@ -487,10 +518,19 @@ ready(() => {
     var commandQueue = [];
 
     function processCommandQueue(){
+        var needDelay = true;
         if(!holdUserAction){
             if(commandQueue.length){
                 let currentCommand = commandQueue.shift();
-                if(currentCommand == 'slow' || currentCommand == 'fast' || currentCommand == 'hold' || currentCommand == 'free'){
+                if(
+                    currentCommand == 'slow' || 
+                    currentCommand == 'fast' || 
+                    currentCommand == 'hold' || 
+                    currentCommand == 'free' ||
+                    currentCommand == 'notplaying' ||
+                    currentCommand == 'playing'
+                    ){
+                    needDelay = false;
                     if(currentCommand == 'hold'){
                         holdSliceRotation = true;
                     }
@@ -503,13 +543,24 @@ ready(() => {
                     else if(currentCommand == 'fast'){
                         transitionLow(true);
                     }
+                    else if(currentCommand == 'notplaying'){
+                        playing = false;
+                    }
+                    else if(currentCommand == 'playing'){
+                        playing = true;
+                    }
                 }
                 else{
                     command(currentCommand);
                 }
             }
         }
-        setTimeout(processCommandQueue, (transitionTime + (transitionTimeDelay * 4)));
+        if(needDelay){
+            setTimeout(processCommandQueue, (transitionTime + (transitionTimeDelay * 4)));
+        }
+        else{
+            setTimeout(processCommandQueue, 10);
+        }
     }
 
     function command(name){
@@ -599,13 +650,12 @@ ready(() => {
             'U-clock','U-counterClock',
             'D-clock','D-counterClock',
         ];
-        var seq = ['hold', 'fast'];
+        var seq = ['hold', 'notplaying', 'fast'];
         var totalRotate = getRandomInt(10,15);
         for(var i = 0; i < totalRotate; i++){
             seq.push(moves[getRandomInt(0, moves.length-1)]);
         }
-        seq.push('slow', 'free');
-        playing = true;
+        seq.push('slow', 'free', 'playing');
         commandQueue = seq;
         processCommandQueue();
     }

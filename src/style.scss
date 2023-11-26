@@ -35,7 +35,7 @@ $colorDown: rgba(250, 2, 2, 0.3);
         align-items: center;
         perspective: $cubeWidth * 4;
         &.is-small-device{
-            transform: scale(.6);
+            // transform: scale(.6);
         }
     }
     .cube-box{
@@ -326,4 +326,15 @@ $colorDown: rgba(250, 2, 2, 0.3);
 .slice-move.ui-draggable-dragging{
     border: 1px solid #000;
     z-index: 100;
+}
+.contact a{
+    color: #afbfcc;
+    font-size: 85%;
+    letter-spacing: 1px;
+    text-decoration: none;
+    border-bottom: 1px solid transparent;
+    padding: 1px 5px;
+}
+.contact a:hover{
+    border-bottom: 1px solid #afbfcc;
 }
